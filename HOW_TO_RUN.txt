@@ -1,0 +1,82 @@
+
+   HOSPITAL STAFFING OPTIMIZATION PROJECT - USER GUIDE
+
+
+1. PREREQUISITES
+
+Before running the code, ensure you have Python installed (3.8 or higher recommended).
+You also need the following Python packages:
+
+   - pandas
+   - numpy
+   - gurobipy (Requires a Gurobi License)
+   - xlsxwriter 
+
+To install them, run this command in your terminal/command prompt:
+   
+   pip install pandas numpy gurobipy xlsxwriter 
+
+
+2. FILE STRUCTURE
+
+Save the code provided in the conversation into two separate Python files in 
+the same folder:
+
+   1. generatedata.py   
+   2. msap_model_solver.py        
+
+
+3. STEP-BY-STEP INSTRUCTIONS
+------------------------------------------------------------------------------
+
+STEP 1: GENERATE DATA
+Run the data generation script first. This creates the historical scenarios 
+and the staff candidate pool.
+
+   Command: python generatedata.py
+
+   > Output: You should see a message confirming that "hospital_data.xlsx" 
+     was created successfully.
+   > Check: Open the folder to confirm the .xlsx file exists.
+
+STEP 2: RUN OPTIMIZATION
+Run the main optimization model. This performs the 3-stage decomposition:
+   - Stage 1: Tabu Search (Finds optimal bed count)
+   - Stage 2: ALNS (Finds optimal staff hiring count)
+   - Stage 3: Gurobi MIP (Generates the final shift schedule)
+
+   Command: python msap_model_solver.py 
+
+   > Output: The console will print the cost reduction progress for Stages 1 & 2.
+     Then, the Gurobi log will appear. 
+     Finally, it will print "✅ SUCCESS!" with the total cost and staffing details.
+
+
+4. CONFIGURATION & CUSTOMIZATION
+------------------------------------------------------------------------------
+If you need to change salaries or constraints, edit the files directly:
+
+   - To change Salaries: 
+     Update the 'REAL_SALARIES' dictionary in BOTH 'generatedata.py' 
+     and 'optimize.py'. They must match!
+
+   - To increase Staff Availability:
+     Change 'NUM_CANDIDATES_PER_SPEC' in 'generatedata.py'.
+
+   - To change Fairness Weights:
+     Edit the 'ALPHA' dictionary in 'msap_model_solver.py'.
+
+
+5. TROUBLESHOOTING
+------------------------------------------------------------------------------
+   * Error: "ModuleNotFoundError: No module named 'xlsxwriter'"
+     Fix: Run `pip install xlsxwriter` in your terminal.
+
+   * Error: "GurobiError: License expired" or "No Gurobi license found"
+     Fix: You need a valid Gurobi license. If you are a student, run 
+     `grbgetkey <YOUR_KEY>` in the terminal to activate your academic license.
+
+   * Error: "Infeasible Model"
+     Fix: This usually means you don't have enough staff candidates to cover 
+     the 24/7 shifts required by government regulations. Open 'generate_data.py' 
+     and increase 'NUM_CANDIDATES_PER_SPEC' to 20, then re-run Step 1 and Step 2.
